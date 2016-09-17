@@ -1,59 +1,45 @@
-;; UI stuff.
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(show-paren-mode +1)
-(column-number-mode +1)
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(package-initialize)
 
-;; Better buffer switcher.
-(iswitchb-mode +1)
+(require 'evil)
+(evil-mode 1)
 
-;; Functions meant for keybindings.
-(defun duplicate-line ()
+(defun setup-tide-mode ()
   (interactive)
-  (move-beginning-of-line 1)
-  (kill-line)
-  (yank)
-  (newline)
-  (yank))
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  ;; company is an optional dependency. You have to
+  ;; install it separately via package-install
+  ;; `M-x package-install [ret] company`
+  (company-mode +1))
 
-;; Keybindings.
-(global-set-key (kbd "C-,") 'iswitchb-buffer)
-(global-set-key (kbd "C-.") 'other-window)
-(global-set-key (kbd "C--") 'delete-other-windows)
-(global-set-key (kbd "C-z") 'slime-selector)
-;; Let's put those Swedish keys into use.
-(keyboard-translate ?\ö ?\()
-(keyboard-translate ?\ä ?\))
-(global-set-key (kbd "M-ö") 'paredit-wrap-round)
-(global-set-key (kbd "M-ä") 'paredit-close-round-and-newline)
+;; aligns annotation to the right hand side
+(setq company-tooltip-align-annotations t)
 
-;; The following assumes (ql:quickload "quicklisp-slime-helper") has been run.
-(load (expand-file-name "~/quicklisp/slime-helper.el"))
-;; Replace "sbcl" with the path to your implementation
-(setq inferior-lisp-program "/home/simon/lisp/sbcl-root/bin/sbcl")
+;; formats the buffer before saving
+(add-hook 'before-save-hook 'tide-format-before-save)
 
-;; Paredit.
-(add-to-list 'load-path "~/elisp")
-(autoload 'enable-paredit-mode "paredit"
-  "Turn on pseudo-structural editing of Lisp code."
-  t)
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
 
-(add-hook 'lisp-mode-hook 'enable-paredit-mode)
+;; format options
+(setq tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
 
-;; Indentation.
-(setq indent-tabs-mode nil)
-(setq-default indent-tabs-mode nil)
-(setq-default tab-width 4)
-
-(global-set-key (kbd "C-<tab>") 'dabbrev-completion)
-
-(defun setup-slime-indentation ()
-  (local-set-key (kbd "<tab>") 'slime-indent-and-complete-symbol)
-  (local-set-key (kbd "RET") 'newline-and-indent))
-
-(add-hook 'slime-mode-hook 'setup-slime-indentation)
-
-(defun setup-js-indentation ()
-  (setq indent-tabs-mode t))
-
-(add-hook 'js-mode-hook 'setup-js-indentation)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes (quote (tango-dark)))
+ '(js-indent-level 2)
+ '(typescript-indent-level 2)
+ '(show-paren-mode t)
+ '(tool-bar-mode nil))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
