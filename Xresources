@@ -21,3 +21,4 @@ XTerm.vt100.color12: #9cc4ff
 XTerm.vt100.color13: #e1acff
 XTerm.vt100.color14: #a3f7ff
 XTerm.vt100.color15: #ffffff
+XTerm*selectToClipboard:true
