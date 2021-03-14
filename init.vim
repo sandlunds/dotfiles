@@ -66,8 +66,19 @@ xmap <leader>fo  <Plug>(coc-format-selected)
 nmap <leader>fo  <Plug>(coc-format-selected)
 
 " FZF stuff
-command! FG call fzf#run({'source': 'git ls-files', 'sink': 'e', 'options': '--multi', 'window': {'width': 0.9, 'height': 0.6}})
 
 " :cd into another git repo
-let list_git_repos_cmd = 'find $HOME -name .git -type d -printf "%h\n"'
-command! ChangeProject call fzf#run({'source': list_git_repos_cmd, 'sink': 'cd', 'window': {'width': 0.9, 'height': 0.6}})
+function! s:change_project()
+    let list_git_repos_cmd = 'find $HOME -name .git -type d -printf "%h\n"'
+    call fzf#run({'source': list_git_repos_cmd, 'sink': 'cd', 'window': {'width': 0.9, 'height': 0.6}})
+endfunction
+
+" Find recently changed files
+function! s:find_recent_files()
+    let list_recent_files = 'fd -t f --changed-within 2days'
+    call fzf#run({'source': list_recent_files, 'sink': 'e', 'window': {'width': 0.9, 'height': 0.6}})
+endfunction
+
+command! FG call fzf#run({'source': 'git ls-files', 'sink': 'e', 'options': '--multi', 'window': {'width': 0.9, 'height': 0.6}})
+command! FindRecent call s:find_recent_files()
+command! ChangeProject call s:change_project()
