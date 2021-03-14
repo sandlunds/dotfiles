@@ -73,10 +73,17 @@ function! s:change_project()
     call fzf#run({'source': list_git_repos_cmd, 'sink': 'cd', 'window': {'width': 0.9, 'height': 0.6}})
 endfunction
 
-" Find recently changed files
+function s:recent_file_handler(file)
+    execute 'e ' . split(a:file)[1]
+endfunction
+
+" Find files sorting by recently changed
 function! s:find_recent_files()
-    let list_recent_files = 'fd -t f --changed-within 2days'
-    call fzf#run({'source': list_recent_files, 'sink': 'e', 'window': {'width': 0.9, 'height': 0.6}})
+    let list_recent_files = 'fd --exec stat --printf "%Y %n\n" | sort -r'
+    call fzf#run({'source': list_recent_files,
+                \ 'sink': function('s:recent_file_handler'),
+                \ 'options': '--with-nth=2 --no-sort',
+                \ 'window': {'width': 0.9, 'height': 0.6}})
 endfunction
 
 command! FG call fzf#run({'source': 'git ls-files', 'sink': 'e', 'options': '--multi', 'window': {'width': 0.9, 'height': 0.6}})
