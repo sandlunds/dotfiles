@@ -79,13 +79,13 @@ endfunction
 
 " Find files sorting by recently changed
 function! s:find_recent_files()
-    let list_recent_files = 'fd --exec stat --printf "%Y %n\n" | sort -r'
+    let list_recent_files = 'fd --type f --exec stat --printf "%Y %n\n" | sort -r'
     call fzf#run({'source': list_recent_files,
                 \ 'sink': function('s:recent_file_handler'),
                 \ 'options': '--with-nth=2 --no-sort',
                 \ 'window': {'width': 0.9, 'height': 0.6}})
 endfunction
 
-command! FG call fzf#run({'source': 'git ls-files', 'sink': 'e', 'options': '--multi', 'window': {'width': 0.9, 'height': 0.6}})
+command! FindGit call fzf#run({'source': 'git ls-files', 'sink': 'e', 'options': '--multi', 'window': {'width': 0.9, 'height': 0.6}})
 command! FindRecent call s:find_recent_files()
 command! ChangeProject call s:change_project()
