@@ -9,6 +9,7 @@ set expandtab
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
+set nohls
 
 set signcolumn=yes
 
@@ -64,6 +65,19 @@ nmap <leader>ac  <Plug>(coc-codeaction)
 " Formatting
 xmap <leader>fo  <Plug>(coc-format-selected)
 nmap <leader>fo  <Plug>(coc-format-selected)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
 
 " FZF stuff
 
