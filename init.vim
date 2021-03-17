@@ -11,6 +11,7 @@ set shiftwidth=4
 set softtabstop=4
 set nohls
 
+set cursorline
 set signcolumn=yes
 
 set clipboard+=unnamedplus
