@@ -1,3 +1,8 @@
+HISTFILESIZE=400000000
+HISTSIZE=10000
+PROMPT_COMMAND="history -a"
+shopt -s histappend
+
 alias vim=nvim
 export EDITOR=nvim
 
@@ -24,6 +29,11 @@ gf() {
     then
         vim $file
     fi
+}
+
+# xdotool is used to "prime" the prompt so you can edit the command before executing it...
+hh() {
+    history | fzf -e +s --tac | sed -re 's/^\s*[0-9]+\s*//' | tr -d '\n' | (xdotool type --file - &)
 }
 
 vide() {

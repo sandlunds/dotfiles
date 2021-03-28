@@ -3,7 +3,7 @@ XTerm.vt100.locale: true
 XTerm.vt100.metaSendsEscape: true
 XTerm.vt100.foreground: #d0d0d0
 XTerm.vt100.background: #292d3e
-XTerm.vt100.faceName: Terminus:style=Regular
+XTerm.vt100.faceName: FantasqueSansMono Nerd Font:style=Regular
 XTerm.vt100.faceSize: 13
 XTerm.vt100.color0: #292d3e
 XTerm.vt100.color1: #f07178

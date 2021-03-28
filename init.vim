@@ -35,6 +35,10 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'jremmen/vim-ripgrep'
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'preservim/nerdtree'
+Plug 'ryanoasis/vim-devicons'
+Plug 'mhinz/vim-startify'
 call plug#end()
 
 " Because we are using lightline we don't need showmode
@@ -48,6 +52,9 @@ let g:lightline = { 'colorscheme': 'palenight' }
 if (has("termguicolors"))
   set termguicolors
 endif
+
+let mapleader = ","
+let maplocalleader = ","
 
 " Use `[g` and `]g` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
@@ -84,7 +91,7 @@ endfunction
 
 " :cd into another git repo
 function! s:change_project()
-    let list_git_repos_cmd = 'find $HOME -name .git -type d -printf "%h\n"'
+    let list_git_repos_cmd = "fd --hidden --glob --type d .git $HOME -x echo {//}"
     call fzf#run({'source': list_git_repos_cmd, 'sink': 'cd', 'window': {'width': 0.9, 'height': 0.6}})
 endfunction
 
@@ -104,3 +111,25 @@ endfunction
 command! FindGit call fzf#run({'source': 'git ls-files', 'sink': 'e', 'options': '--multi', 'window': {'width': 0.9, 'height': 0.6}})
 command! FindRecent call s:find_recent_files()
 command! ChangeProject call s:change_project()
+
+" Tree sitter stuff
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  highlight = {
+    enable = true,              -- false will disable the whole extension
+  },
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = "<M-w>",
+      node_incremental = "<M-w>",
+      scope_incremental = "<M-e>",
+      node_decremental = "<M-S-w>",
+    },
+  },
+}
+EOF
+
+" For when we use neovide
+let g:neovide_cursor_vfx_mode = "railgun"
