@@ -21,12 +21,8 @@ set mouse=a
 
 autocmd Filetype yaml setlocal ts=2 sw=2 sts=2
 autocmd Filetype typescript setlocal ts=2 sw=2 sts=2
-
-augroup SyntaxGroup
-    autocmd!
-    " Disable match paren that confuses me
-    au VimEnter * execute "NoMatchParen"
-augroup END
+autocmd Filetype javascript setlocal ts=2 sw=2 sts=2
+autocmd Filetype java setlocal noexpandtab
 
 call plug#begin('~/.vim/plugged')
 Plug 'drewtempelmeyer/palenight.vim'
@@ -39,7 +35,17 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'preservim/nerdtree'
 Plug 'ryanoasis/vim-devicons'
 Plug 'mhinz/vim-startify'
+Plug 'guns/vim-sexp'
+Plug 'tpope/vim-sexp-mappings-for-regular-people'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-surround'
+Plug 'folke/which-key.nvim'
+Plug 'Olical/conjure'
+Plug 'Olical/aniseed', { 'tag': 'v3.18.0' }
+Plug 'Olical/conjure', {'tag': 'v4.19.0'}
 call plug#end()
+
+let g:rainbow_active = 1
 
 " Because we are using lightline we don't need showmode
 set noshowmode
@@ -67,12 +73,15 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
 " Symbol renaming.
-nmap <leader>rn <Plug>(coc-rename)
+nmap <leader>rn  <Plug>(coc-rename)
 nmap <leader>ac  <Plug>(coc-codeaction)
 
 " Formatting
 xmap <leader>fo  <Plug>(coc-format-selected)
 nmap <leader>fo  <Plug>(coc-format-selected)
+
+nmap <leader>n :NERDTreeFind<CR>
+nmap <leader>N :NERDTree<CR>
 
 " Use K to show documentation in preview window.
 nnoremap <silent> K :call <SID>show_documentation()<CR>
@@ -91,7 +100,7 @@ endfunction
 
 " :cd into another git repo
 function! s:change_project()
-    let list_git_repos_cmd = "fd --hidden --glob --type d .git $HOME -x echo {//}"
+    let list_git_repos_cmd = "fd --hidden --glob .git $HOME -x echo {//}"
     call fzf#run({'source': list_git_repos_cmd, 'sink': 'cd', 'window': {'width': 0.9, 'height': 0.6}})
 endfunction
 
@@ -112,12 +121,15 @@ command! FindGit call fzf#run({'source': 'git ls-files', 'sink': 'e', 'options':
 command! FindRecent call s:find_recent_files()
 command! ChangeProject call s:change_project()
 
+nmap <leader>ll :FindGit<CR>
+
 " Tree sitter stuff
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
   ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
   highlight = {
     enable = true,              -- false will disable the whole extension
+    disable = { "clojure" },
   },
   incremental_selection = {
     enable = true,
@@ -129,6 +141,15 @@ require'nvim-treesitter.configs'.setup {
     },
   },
 }
+
+EOF
+
+lua << EOF
+  require("which-key").setup {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
 EOF
 
 " For when we use neovide
